@@ -5,7 +5,7 @@ library(dplyr)
 library(stringr)
 
 # Define the path to the folder containing the RData files
-data <- read.csv2("Multiverse-Workshop/clean_ema.csv", sep = ",")   
+data <- read.csv2("https://osf.io/t7g4f/download", sep = ",")   
 
 # Rename columns
 data <- data |> rename_with(~c("Stress_1", "Stress_2", "Anxiety_1", "Anxiety_2", "Depression_1", "Depression_2",  
