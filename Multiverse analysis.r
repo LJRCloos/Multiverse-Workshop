@@ -135,13 +135,14 @@ for (dataset_name in names(datasets)) {
     }
   }
 
-  # plot the p-values across datasets for Negative Affect
+  # plot the p-values across datasets for Social Media
     results |> 
         filter(coefficient == "Social Media") |>
         ggplot() +
-        geom_histogram(aes(x = p.value), bins = 100, fill = "white", color = "black") +
+        geom_histogram(aes(x = round(p.value, digits = 3)),fill = "white", color = "black") +
         geom_vline( xintercept = 0.05, color = "red", linetype = "dashed", size = 2) +
         theme_minimal() +
+        labs(x = "p-value", y = "count") +
         theme(strip.placement = "outside",
                             axis.text = element_text(size = 18, color = "white"),
                             axis.text.y = element_text(size = 16, color = "white"),
@@ -159,7 +160,7 @@ ggsave("pvalues.png",
        units = "in", 
        dpi = 300) 
 
-spec.curve = results |> filter(coefficient == "Negative_Affect") |>
+spec.curve = results |> filter(coefficient == "Social Media") |>
                         mutate(negative_affect = rep(negative_affect_levels, each = 6),
                                response_time = rep(as.character(response_time_levels), each = 2, times = 4),
                                compliance = rep(as.character(compliance_levels), times = 12)
@@ -199,20 +200,21 @@ ggsave("specs.png",
        dpi = 300) 
 
 spec.curve |>  ggplot() +
-                    geom_point( aes(dataset_number , estimate, color = (p.value < 0.05)), size = 3) +
-                    labs(x = "", y = "coefficient of Negative Affect") +
+                    geom_point( aes(dataset_number , estimate, color = negative_affect), size = 4) +
+                    labs(x = "Multiverse", y = "Coefficient of Social Media", color ="Negative Affect") +
                     theme_minimal() +
                     theme(strip.placement = "outside",
                             axis.text = element_text(size = 18, color = "white"),
                             axis.text.y = element_text(size = 16, color = "white"),
+                            legend.title = element_text(color = "white"), 
+                            legend.text = element_text(color = "white"), 
                             axis.title.y = element_text(size = 20, color = "white"),
                             axis.title.x = element_text(size = 20, color = "white"),
-                            #axis.ticks.y = element_blank(),  
                             strip.background = element_rect(fill=NA,colour=NA),
                             panel.spacing.x=unit(0.01,"cm"), 
                             strip.text.y = element_text(angle = 180, color = "white", face="bold", size=16), 
                             panel.spacing = unit(0.01, "lines"),
-                            legend.position = "none") 
+                            legend.position = "top") 
 
 ggsave("estimates.png", 
        plot = last_plot(), 
@@ -221,4 +223,28 @@ ggsave("estimates.png",
        units = "in", 
        dpi = 300) 
 
-results |> filter(coefficient = "Negative Affect")
+results |> filter(coefficient == "Social Media") |> ggplot(aes(x=estimate)) +
+                    geom_histogram( fill="#69b3a2", color="#e9ecef", alpha=0.9) + 
+                    theme_minimal() +
+                    labs(x="Coefficient of Social Media", y="count") +
+                    theme(strip.placement = "outside",
+                            axis.text = element_text(size = 18, color = "white"),
+                            axis.text.y = element_text(size = 16, color = "white"),
+                            axis.title.y = element_text(size = 20, color = "white"),
+                            axis.title.x = element_text(size = 20, color = "white"),
+                            axis.text.x = element_text(size = 15, color = "white"),  
+                            strip.background = element_rect(fill=NA,colour=NA),
+                            strip.text.y = element_text(angle = 180, color = "white", face="bold", size=16), 
+                           ) 
+
+ggsave("hist.png", 
+       plot = last_plot(), 
+       width = 10, 
+       height = 9, 
+       units = "in", 
+       dpi = 300) 
+
+# order estimates by p-value and make table of dataframe names in descending order with estimate p-value and conf int
+results |> filter(coefficient == "Social Media") |> mutate(dataset_name = str_remove(dataset_name, "dataset_")) |>
+arrange(desc(estimate)) |>  mutate_if(is.numeric, round, 3) |>
+select(dataset_name, estimate, p.value, conf.low, conf.high) 
