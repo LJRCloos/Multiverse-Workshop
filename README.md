@@ -10,3 +10,5 @@ The code is in the main folder under Multiverse analysis.r
 In the code there is a direct link to downloading the data from osf.
 
 The slides of the presentation provide the background on the method and the decisions in the dataset. 
+
+In the folder Plots there is the code of producing the plots in the presentation. 
