@@ -35,8 +35,6 @@ data <- data |> group_by(ID) |>
 
 ## Make 24 Datasets
 
-# ...existing code...
-
 # Define criteria levels
 negative_affect_levels <- c("Composite", "Stress", "Depression", "Anxiety")
 response_time_levels <- c(Inf, 2700, 1800)
